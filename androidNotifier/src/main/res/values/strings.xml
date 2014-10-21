@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+   Copyright 2011 Rodrigo Damazio
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<resources>
+  <string name="app_name">Android Notifier</string>
+  <string name="settings_title">Remote Notifier Settings</string>
+  <string name="notification_title">Remote notifications/commands</string>
+  <string name="notification_text">Notifications and commands are active.</string>
+
+  <string name="sms_body_unavailable">Body unavailable</string>
+  <string name="popup_display_title">Remote notification</string>
+
+  <string name="prefs_title">Android Notifier Preferneces</string>
+  <string name="prefs_general_title">General</string>
+  <string name="prefs_general_summary">Options that affect every function of the app</string>
+  <string name="prefs_log_title">Event log</string>
+  <string name="prefs_keep_log_title">Keep event log</string>
+  <string name="prefs_keep_log_summary_on">All events will be kept in an event log</string>
+  <string name="prefs_keep_log_summary_off">No events will be kept in an event log</string>
+  <string name="prefs_prune_log_title">Prune event log</string>
+  <string name="prefs_prune_log_summary_on">Old events will be deleted from the log</string>
+  <string name="prefs_prune_log_summary_off">All events will be kept in the event log</string>
+  <string name="prefs_prune_log_days_title">Keep logs for</string>
+  <string name="prefs_prune_log_days_summary">Number of days for which to keep events in the log</string>
+  <string name="prefs_prune_log_days_message">Enter the number of days to keep events in the log</string>
+  <string name="prefs_process_title">Process</string>
+  <string name="prefs_start_at_boot_title">Start at boot</string>
+  <string name="prefs_start_at_boot_summary_on">Will start handling commands/notifications when the phone starts up</string>
+  <string name="prefs_start_at_boot_summary_off">Will require manual starting of command/notification handling</string>
+  <string name="prefs_start_foreground_title">Run as foreground</string>
+  <string name="prefs_start_foreground_summary_on">Shows a notification and prevents the process from being killed</string>
+  <string name="prefs_start_foreground_summary_off">Without foreground mode, the process may be killed at any time by the system (not recommended).</string>
+  <string name="prefs_comm_title">Communication</string>
+  <string name="prefs_comm_summary">Options for communicating with other devices</string>
+  <string name="prefs_comm_methods_title">Comm. methods</string>
+  <string name="prefs_comm_method_cloud_title">Cloud</string>
+  <string name="prefs_comm_method_cloud_summary_on">Will securely send events over the Internet</string>
+  <string name="prefs_comm_method_cloud_summary_off">Won\'t send events over the Internet</string>
+  <string name="prefs_comm_method_ip_title">IP (3G/WiFi)</string>
+  <string name="prefs_comm_method_ip_summary_on">Will send events over the wireless network</string>
+  <string name="prefs_comm_method_ip_summary_off">Won\'t send events over the wireless network\'</string>
+  <string name="prefs_comm_method_bluetooth_title">Bluetooth</string>
+  <string name="prefs_comm_method_bluetooth_summary_on">Will send events over Bluetooth</string>
+  <string name="prefs_comm_method_bluetooth_summary_off">Won\'t send events over Bluetooth\'</string>
+  <string name="prefs_comm_method_usb_title">USB</string>
+  <string name="prefs_comm_method_usb_summary_on">Will send events over the USB connection (only for connecting to a desktop)</string>
+  <string name="prefs_comm_method_usb_summary_off">Won\'t send events over USB</string>
+  <string name="prefs_pairing_title">Pairing</string>
+  <string name="prefs_pairing_summary">Configure what devices we\'ll communicate with</string>
+  <string name="prefs_pairing_general_title">General</string>
+  <string name="prefs_add_pairing_title">Add device</string>
+  <string name="prefs_add_pairing_summary">Add a device to communicate with</string>
+  <string name="prefs_paired_devices_title">Paired devices</string>
+  <string name="prefs_notification_title">Notifications</string>
+  <string name="prefs_notification_summary">Options for event notifications</string>
+  <string name="prefs_notification_master_title">General</string>
+  <string name="prefs_send_notifications_title">Send notifications</string>
+  <string name="prefs_send_notifications_summary_on">Notifications will be sent to paired devices</string>
+  <string name="prefs_send_notifications_summary_off">No notifications will be sent</string>
+  <string name="prefs_receive_notifications_title">Receive notifications</string>
+  <string name="prefs_receive_notifications_summary_on">Notifications will be received from paired devices</string>
+  <string name="prefs_receive_notifications_summary_off">Received notifications will be ignored</string>
+  <string name="prefs_notification_send_title">Notification sending</string>
+  <string name="prefs_send_ring_title">Ring</string>
+  <string name="prefs_send_ring_summary_on">A notification will be sent when the phone rings</string>
+  <string name="prefs_send_ring_summary_off">Nothing will be done when the phone rings</string>
+  <string name="prefs_send_missed_call_title">Missed calls</string>
+  <string name="prefs_send_missed_call_summary_on">A notification will be sent when you miss a call</string>
+  <string name="prefs_send_missed_call_summary_off">Nothing will be done when you miss a call</string>
+  <string name="prefs_send_voicemail_title">Voicemail</string>
+  <string name="prefs_send_voicemail_summary_on">A notification will be sent when you have voicemail waiting</string>
+  <string name="prefs_send_voicemail_summary_off">Nothing will be done when you have voicemail waiting</string>
+  <string name="prefs_send_sms_title">SMS</string>
+  <string name="prefs_send_sms_summary_on">A notification will be sent when you receive SMS</string>
+  <string name="prefs_send_sms_summary_off">Nothing will be done when you receive SMS</string>
+  <string name="prefs_send_mms_title">MMS</string>
+  <string name="prefs_send_mms_summary_on">A notification will be sent when you receive MMS</string>
+  <string name="prefs_send_mms_summary_off">Nothing will be done when you receive MMS</string>
+  <string name="prefs_send_battery_title">Battery</string>
+  <string name="prefs_send_battery_summary_on">A notification will be sent when battery charge changes</string>
+  <string name="prefs_send_battery_summary_off">Nothing will be done when battery charge changes</string>
+  <string name="prefs_send_third_party_title">Third-party</string>
+  <string name="prefs_send_third_party_summary_on">Other applications are allowed to send notifications</string>
+  <string name="prefs_send_third_party_summary_off">Notifications from other applications will be ignored</string>
+  <string name="prefs_notification_display_title">Display</string>
+  <string name="prefs_display_system_title">Notification</string>
+  <string name="prefs_display_system_summary_on">Received notifications will be shown in the status bar</string>
+  <string name="prefs_display_system_summary_off"></string>
+  <string name="prefs_display_toast_title">Toast</string>
+  <string name="prefs_display_toast_summary_on">Received notifications will be shown as a toast pop-up</string>
+  <string name="prefs_display_toast_summary_off"></string>
+  <string name="prefs_display_popup_title">Pop-up</string>
+  <string name="prefs_display_popup_summary_on">Received notifications will be shown as a pop-up dialog</string>
+  <string name="prefs_display_popup_summary_off"></string>
+
+  <string name="prefs_command_title">Commands</string>
+  <string name="prefs_command_summary">Options for executing commands sent from other devices</string>
+  <string name="prefs_command_master_title">General</string>
+  <string name="prefs_receive_commands_title">Receive commands</string>
+  <string name="prefs_receive_commands_summary_on">Remote commands will be accepted</string>
+  <string name="prefs_receive_commands_summary_off">Remote commands will be ignored</string>
+  <string name="prefs_command_receive_title">Commands</string>
+  <string name="prefs_execute_call_title">Call</string>
+  <string name="prefs_execute_call_summary_on"></string>
+  <string name="prefs_execute_call_summary_off"></string>
+  <string name="prefs_execute_hangup_title">Hang Up</string>
+  <string name="prefs_execute_hangup_summary_on"></string>
+  <string name="prefs_execute_hangup_summary_off"></string>
+  <string name="prefs_execute_sms_title">SMS</string>
+  <string name="prefs_execute_sms_summary_on"></string>
+  <string name="prefs_execute_sms_summary_off"></string>
+  <string name="prefs_misc_title">Miscellaneous</string>
+  <string name="prefs_about_title">About</string>
+  <string name="prefs_report_bug_title">Report issue</string>
+  <string name="prefs_report_bug_summary"></string>
+</resources>

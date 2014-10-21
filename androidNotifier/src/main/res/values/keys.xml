@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="prefkey_min_battery_level">minBatteryLevel</string>
+  <string name="prefkey_max_battery_level">maxBatteryLevel</string>
+  <string name="prefkey_min_battery_level_change">batteryMinLevelChange</string>
+
+  <string name="prefkey_started_once">startedOnce</string>
+  <string name="prefkey_keep_log">keepLog</string>
+  <string name="prefkey_prune_log">pruneLog</string>
+  <string name="prefkey_prune_log_days">pruneLogDays</string>
+  <string name="prefkey_start_at_boot">startAtBoot</string>
+  <string name="prefkey_start_foreground">startForeground</string>
+  <string name="prefkey_send_notifications">sendNotifications</string>
+  <string name="prefkey_receive_notifications">receiveNotifications</string>
+  <string name="prefkey_display_system">displaySystem</string>
+  <string name="prefkey_display_toast">displayToast</string>
+  <string name="prefkey_display_popup">displayPopup</string>
+  <string name="prefkey_receive_commands">receiveCommands</string>
+
+  <!-- %s here and below must match the Event.Type enum. -->
+  <string name="prefkey_event_type_format">events.%s.enabled</string>
+  <string name="prefkey_send_ring">events.NOTIFICATION_RING.enabled</string>
+  <string name="prefkey_send_missed_call">events.NOTIFICATION_MISSED_CALL.enabled</string>
+  <string name="prefkey_send_voicemail">events.NOTIFICATION_VOICEMAIL.enabled</string>
+  <string name="prefkey_send_sms">events.NOTIFICATION_SMS.enabled</string>
+  <string name="prefkey_send_mms">events.NOTIFICATION_MMS.enabled</string>
+  <string name="prefkey_send_battery">events.NOTIFICATION_BATTERY.enabled</string>
+  <string name="prefkey_send_third_party">events.NOTIFICATION_THIRD_PARTY.enabled</string>
+  <string name="prefkey_execute_call">events.COMMAND_CALL.enabled</string>
+  <string name="prefkey_execute_hangup">events.COMMAND_HANGUP.enabled</string>
+  <string name="prefkey_execute_sms">events.COMMAND_SMS.enabled</string>
+
+  <string name="prefkey_comm_method_cloud">enableCloud</string>
+  <string name="prefkey_comm_method_ip">enableIp</string>
+  <string name="prefkey_comm_method_bluetooth">enableBluetooth</string>
+  <string name="prefkey_comm_method_usb">enableUsb</string>
+
+  <!-- Non-persistent keys -->
+  <string name="prefkey_np_add_pairing">addPairing</string>
+  <string name="prefkey_np_about">about</string>
+  <string name="prefkey_np_report_bug">reportBug</string>
+
+</resources>

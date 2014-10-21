@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+  <PreferenceCategory android:title="@string/prefs_title">
+    <!-- General -->
+    <PreferenceScreen android:title="@string/prefs_general_title"
+                      android:summary="@string/prefs_general_summary">
+      <!-- Event log -->
+      <PreferenceCategory android:title="@string/prefs_log_title">
+        <CheckBoxPreference android:key="@string/prefkey_keep_log"
+                            android:title="@string/prefs_keep_log_title"
+                            android:summaryOn="@string/prefs_keep_log_summary_on"
+                            android:summaryOff="@string/prefs_keep_log_summary_off"
+                            android:defaultValue="true" />
+
+        <CheckBoxPreference android:key="@string/prefkey_prune_log"
+                            android:title="@string/prefs_prune_log_title"
+                            android:summaryOn="@string/prefs_prune_log_summary_on"
+                            android:summaryOff="@string/prefs_prune_log_summary_off"
+                            android:defaultValue="true" />
+
+        <!-- TODO: Should be a spinner -->
+        <EditTextPreference android:key="@string/prefkey_prune_log_days"
+                            android:title="@string/prefs_prune_log_days_title"
+                            android:summary="@string/prefs_prune_log_days_summary"
+                            android:dialogTitle="@string/prefs_prune_log_days_title"
+                            android:dialogMessage="@string/prefs_prune_log_days_message"
+                            android:defaultValue="7" />
+      </PreferenceCategory>
+
+      <!-- Process -->
+      <PreferenceCategory android:title="@string/prefs_process_title">
+        <CheckBoxPreference android:key="@string/prefkey_start_at_boot"
+                            android:title="@string/prefs_start_at_boot_title"
+                            android:summaryOn="@string/prefs_start_at_boot_summary_on"
+                            android:summaryOff="@string/prefs_start_at_boot_summary_off"
+                            android:defaultValue="true" />
+        <CheckBoxPreference android:key="@string/prefkey_start_foreground"
+                            android:title="@string/prefs_start_foreground_title"
+                            android:summaryOn="@string/prefs_start_foreground_summary_on"
+                            android:summaryOff="@string/prefs_start_foreground_summary_off"
+                            android:defaultValue="true" />
+      </PreferenceCategory>
+    </PreferenceScreen>
+
+    <!-- Communication -->
+    <PreferenceScreen android:title="@string/prefs_comm_title"
+                      android:summary="@string/prefs_comm_summary">
+      <PreferenceCategory android:title="@string/prefs_comm_methods_title">
+        <CheckBoxPreference android:key="@string/prefkey_comm_method_cloud"
+                            android:title="@string/prefs_comm_method_cloud_title"
+                            android:summaryOn="@string/prefs_comm_method_cloud_summary_on"
+                            android:summaryOff="@string/prefs_comm_method_cloud_summary_off"
+                            android:defaultValue="true" />
+        <CheckBoxPreference android:key="@string/prefkey_comm_method_ip"
+                            android:title="@string/prefs_comm_method_ip_title"
+                            android:summaryOn="@string/prefs_comm_method_ip_summary_on"
+                            android:summaryOff="@string/prefs_comm_method_ip_summary_off"
+                            android:defaultValue="true" />
+        <CheckBoxPreference android:key="@string/prefkey_comm_method_bluetooth"
+                            android:title="@string/prefs_comm_method_bluetooth_title"
+                            android:summaryOn="@string/prefs_comm_method_bluetooth_summary_on"
+                            android:summaryOff="@string/prefs_comm_method_bluetooth_summary_off"
+                            android:defaultValue="true" />
+        <CheckBoxPreference android:key="@string/prefkey_comm_method_usb"
+                            android:title="@string/prefs_comm_method_usb_title"
+                            android:summaryOn="@string/prefs_comm_method_usb_summary_on"
+                            android:summaryOff="@string/prefs_comm_method_usb_summary_off"
+                            android:defaultValue="true" />
+      </PreferenceCategory>
+    </PreferenceScreen>
+
+    <!-- Paired devices -->
+    <PreferenceScreen android:title="@string/prefs_pairing_title"
+                      android:summary="@string/prefs_pairing_summary">
+      <PreferenceCategory android:title="@string/prefs_pairing_general_title">
+        <Preference android:key="@string/prefkey_np_add_pairing"
+                    android:title="@string/prefs_add_pairing_title"
+                    android:summary="@string/prefs_add_pairing_summary"
+                    android:persistent="false" />
+      </PreferenceCategory>
+
+      <!-- List of paired devices -->
+      <PreferenceCategory android:title="@string/prefs_paired_devices_title">
+        <!-- Items are dynamically inserted here -->
+      </PreferenceCategory>
+    </PreferenceScreen>
+
+    <!-- Notifications -->
+    <PreferenceScreen android:title="@string/prefs_notification_title"
+                      android:summary="@string/prefs_notification_summary">
+      <!-- Master switches -->
+      <PreferenceCategory android:title="@string/prefs_notification_master_title">
+        <CheckBoxPreference android:key="@string/prefkey_send_notifications"
+                            android:title="@string/prefs_send_notifications_title"
+                            android:summaryOn="@string/prefs_send_notifications_summary_on"
+                            android:summaryOff="@string/prefs_send_notifications_summary_off"
+                            android:defaultValue="true" />
+        <CheckBoxPreference android:key="@string/prefkey_receive_notifications"
+                            android:title="@string/prefs_receive_notifications_title"
+                            android:summaryOn="@string/prefs_receive_notifications_summary_on"
+                            android:summaryOff="@string/prefs_receive_notifications_summary_off"
+                            android:defaultValue="false" />
+      </PreferenceCategory>
+
+      <!-- Notifications sending -->
+      <PreferenceCategory android:title="@string/prefs_notification_send_title"
+                          android:dependency="@string/prefkey_send_notifications">
+        <CheckBoxPreference android:key="@string/prefkey_send_ring"
+                            android:title="@string/prefs_send_ring_title"
+                            android:summaryOn="@string/prefs_send_ring_summary_on"
+                            android:summaryOff="@string/prefs_send_ring_summary_off"
+                            android:defaultValue="true" />
+        <CheckBoxPreference android:key="@string/prefkey_send_missed_call"
+                            android:title="@string/prefs_send_missed_call_title"
+                            android:summaryOn="@string/prefs_send_missed_call_summary_on"
+                            android:summaryOff="@string/prefs_send_missed_call_summary_off"
+                            android:defaultValue="true" />
+        <CheckBoxPreference android:key="@string/prefkey_send_voicemail"
+                            android:title="@string/prefs_send_voicemail_title"
+                            android:summaryOn="@string/prefs_send_voicemail_summary_on"
+                            android:summaryOff="@string/prefs_send_voicemail_summary_off"
+                            android:defaultValue="true" />
+        <CheckBoxPreference android:key="@string/prefkey_send_sms"
+                            android:title="@string/prefs_send_sms_title"
+                            android:summaryOn="@string/prefs_send_sms_summary_on"
+                            android:summaryOff="@string/prefs_send_sms_summary_off"
+                            android:defaultValue="true" />
+        <CheckBoxPreference android:key="@string/prefkey_send_mms"
+                            android:title="@string/prefs_send_mms_title"
+                            android:summaryOn="@string/prefs_send_mms_summary_on"
+                            android:summaryOff="@string/prefs_send_mms_summary_off"
+                            android:defaultValue="true" />
+        <CheckBoxPreference android:key="@string/prefkey_send_battery"
+                            android:title="@string/prefs_send_battery_title"
+                            android:summaryOn="@string/prefs_send_battery_summary_on"
+                            android:summaryOff="@string/prefs_send_battery_summary_off"
+                            android:defaultValue="true" />
+        <CheckBoxPreference android:key="@string/prefkey_send_third_party"
+                            android:title="@string/prefs_send_third_party_title"
+                            android:summaryOn="@string/prefs_send_third_party_summary_on"
+                            android:summaryOff="@string/prefs_send_third_party_summary_off"
+                            android:defaultValue="true" />
+      </PreferenceCategory>
+
+      <!-- Notifications display -->
+      <PreferenceCategory android:title="@string/prefs_notification_display_title"
+                          android:dependency="@string/prefkey_receive_notifications">
+        <!-- TODO: Options for ringtone, lights, etc. -->
+        <CheckBoxPreference android:key="@string/prefkey_display_system"
+                            android:title="@string/prefs_display_system_title"
+                            android:summaryOn="@string/prefs_display_system_summary_on"
+                            android:summaryOff="@string/prefs_display_system_summary_off"
+                            android:defaultValue="true" />
+        <CheckBoxPreference android:key="@string/prefkey_display_toast"
+                            android:title="@string/prefs_display_toast_title"
+                            android:summaryOn="@string/prefs_display_toast_summary_on"
+                            android:summaryOff="@string/prefs_display_toast_summary_off"
+                            android:defaultValue="false" />
+        <CheckBoxPreference android:key="@string/prefkey_display_popup"
+                            android:title="@string/prefs_display_popup_title"
+                            android:summaryOn="@string/prefs_display_popup_summary_on"
+                            android:summaryOff="@string/prefs_display_popup_summary_off"
+                            android:defaultValue="false" />
+      </PreferenceCategory>
+    </PreferenceScreen>
+
+    <!-- Commands -->
+    <PreferenceScreen android:title="@string/prefs_command_title"
+                      android:summary="@string/prefs_command_summary">
+      <!-- Master switch -->
+      <PreferenceCategory android:title="@string/prefs_command_master_title">
+        <CheckBoxPreference android:key="@string/prefkey_receive_commands"
+                            android:title="@string/prefs_receive_commands_title"
+                            android:summaryOn="@string/prefs_receive_commands_summary_on"
+                            android:summaryOff="@string/prefs_receive_commands_summary_off"
+                            android:defaultValue="false" />
+      </PreferenceCategory>
+
+      <PreferenceCategory android:title="@string/prefs_command_receive_title"
+                          android:dependency="@string/prefkey_receive_commands">
+        <CheckBoxPreference android:key="@string/prefkey_execute_call"
+                            android:title="@string/prefs_execute_call_title"
+                            android:summaryOn="@string/prefs_execute_call_summary_on"
+                            android:summaryOff="@string/prefs_execute_call_summary_off"
+                            android:defaultValue="true" />
+        <CheckBoxPreference android:key="@string/prefkey_execute_hangup"
+                            android:title="@string/prefs_execute_hangup_title"
+                            android:summaryOn="@string/prefs_execute_hangup_summary_on"
+                            android:summaryOff="@string/prefs_execute_hangup_summary_off"
+                            android:defaultValue="true" />
+        <CheckBoxPreference android:key="@string/prefkey_execute_sms"
+                            android:title="@string/prefs_execute_sms_title"
+                            android:summaryOn="@string/prefs_execute_sms_summary_on"
+                            android:summaryOff="@string/prefs_execute_sms_summary_off"
+                            android:defaultValue="true" />
+      </PreferenceCategory>
+    </PreferenceScreen>
+  </PreferenceCategory>
+
+  <!-- Misc -->
+  <PreferenceCategory android:title="@string/prefs_misc_title">
+    <!-- Summary is set dynamically with the version -->
+    <Preference android:key="@string/prefkey_np_about"
+                android:title="@string/prefs_about_title"
+                android:persistent="false" />
+
+    <Preference android:key="@string/prefkey_np_report_bug"
+                android:title="@string/prefs_report_bug_title"
+                android:summary="@string/prefs_report_bug_summary"
+                android:persistent="false" />
+
+  </PreferenceCategory>
+</PreferenceScreen>

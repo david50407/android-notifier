@@ -1,0 +1,23 @@
+apply plugin: 'android'
+
+android {
+    compileSdkVersion 14
+    buildToolsVersion '20.0.0'
+    defaultConfig {
+        applicationId 'org.damazio.notifier'
+        minSdkVersion 6
+        targetSdkVersion 6
+    }
+    buildTypes {
+        release {
+            runProguard true
+            proguardFiles 'proguard.cfg'
+        }
+    }
+    productFlavors {
+    }
+}
+
+dependencies {
+    compile project(':notifierLib')
+}

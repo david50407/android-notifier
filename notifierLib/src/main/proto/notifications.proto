@@ -1,0 +1,64 @@
+// Copyright 2011 Rodrigo Damazio
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//       http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+package org.damazio.notifier.protocol;
+
+option optimize_for = LITE_RUNTIME;
+
+import "common.proto";
+
+message RingNotification {
+  required PhoneNumber number = 1;
+}
+
+message MissedCallNotification {
+  required PhoneNumber number = 1;
+
+  // The time at which the call was missed.
+  required int32 timestamp = 2;  // UTC unix time
+}
+
+message VoicemailNotification {
+  required bool has_voicemail = 1 [default = true];
+}
+
+message SmsNotification {
+  required PhoneNumber sender = 1;
+  required string text = 2;
+}
+
+message MmsNotification {
+  required PhoneNumber sender = 1;
+  optional string text = 2;
+  optional bytes image = 3;
+}
+
+message BatteryNotification {
+  enum State {
+    CHARGING = 1;
+    DISCHARGING = 2;
+    NOT_CHARGING = 3;
+    FULL = 4;
+  }
+
+  optional State state = 1;
+  optional int32 chargePercentage = 2;
+}
+
+message ThirdPartyNotification {
+  // Either title or description (or both) must be set.
+  optional string title = 1;
+  optional string description = 2;
+
+  optional bytes image = 3;
+}
