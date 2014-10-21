@@ -1,4 +1,4 @@
-## AndroidNotifier
+# AndroidNotifier
 _Desktop event notifier for Android devices_
 
 This is forked from [android-notifier](http://code.google.com/p/android-notifier/).
