@@ -34,41 +34,41 @@ import android.widget.Toast;
  */
 public class RemoteNotificationDisplayer implements EventListener {
 
-  public void onNewEvent(EventContext context, long eventId, Event event, boolean isLocal, boolean isCommand) {
-    // Only care about remote notifications.
-    if (isLocal || isCommand) {
-      return;
+    public void onNewEvent(EventContext context, long eventId, Event event, boolean isLocal, boolean isCommand) {
+        // Only care about remote notifications.
+        if (isLocal || isCommand) {
+            return;
+        }
+
+        // TODO: Proper text
+        String shortText = event.toString();
+
+        Preferences preferences = context.getPreferences();
+        Context androidContext = context.getAndroidContext();
+        if (preferences.isSystemDisplayEnabled()) {
+            Notification notification = new Notification(R.drawable.icon, shortText, System.currentTimeMillis());
+            // TODO: Intent = event log
+            // TODO: Configurable defaults
+            notification.defaults = Notification.DEFAULT_ALL;
+            notification.flags |= Notification.FLAG_AUTO_CANCEL;
+
+            NotificationManager notificationManager =
+                    (NotificationManager) androidContext.getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.notify(
+                    "display",
+                    (int) (event.getTimestamp() & Integer.MAX_VALUE),
+                    notification);
+        }
+
+        if (preferences.isToastDisplayEnabled()) {
+            Toast.makeText(androidContext, shortText, Toast.LENGTH_LONG).show();
+        }
+
+        if (preferences.isPopupDisplayEnabled()) {
+            Intent intent = new Intent(androidContext, PopupDisplayActivity.class);
+            intent.putExtra(PopupDisplayActivity.EXTRA_POPUP_TEXT, shortText);
+        }
+
+        context.getEventManager().markEventProcessed(eventId);
     }
-
-    // TODO: Proper text
-    String shortText = event.toString();
-
-    Preferences preferences = context.getPreferences();
-    Context androidContext = context.getAndroidContext();
-    if (preferences.isSystemDisplayEnabled()) {
-      Notification notification = new Notification(R.drawable.icon, shortText, System.currentTimeMillis());
-      // TODO: Intent = event log
-      // TODO: Configurable defaults
-      notification.defaults = Notification.DEFAULT_ALL;
-      notification.flags |= Notification.FLAG_AUTO_CANCEL;
-
-      NotificationManager notificationManager =
-          (NotificationManager) androidContext.getSystemService(Context.NOTIFICATION_SERVICE);
-      notificationManager.notify(
-          "display",
-          (int) (event.getTimestamp() & Integer.MAX_VALUE),
-          notification);
-    }
-
-    if (preferences.isToastDisplayEnabled()) {
-      Toast.makeText(androidContext, shortText, Toast.LENGTH_LONG).show();
-    }
-
-    if (preferences.isPopupDisplayEnabled()) {
-      Intent intent = new Intent(androidContext, PopupDisplayActivity.class);
-      intent.putExtra(PopupDisplayActivity.EXTRA_POPUP_TEXT, shortText);
-    }
-
-    context.getEventManager().markEventProcessed(eventId);
-  }
 }

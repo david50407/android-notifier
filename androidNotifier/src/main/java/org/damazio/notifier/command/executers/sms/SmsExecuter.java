@@ -31,22 +31,22 @@ import android.util.Log;
 
 public class SmsExecuter implements CommandExecuter {
 
-  public void executeCommand(Context context, ByteString payload) {
-    SmsCommand command;
-    try {
-      command = SmsCommand.parseFrom(payload);
-    } catch (InvalidProtocolBufferException e) {
-      Log.e(TAG, "Failed to parse SMS command", e);
-      return;
+    public void executeCommand(Context context, ByteString payload) {
+        SmsCommand command;
+        try {
+            command = SmsCommand.parseFrom(payload);
+        } catch (InvalidProtocolBufferException e) {
+            Log.e(TAG, "Failed to parse SMS command", e);
+            return;
+        }
+
+        String text = command.getText();
+        String number = command.getToNumber();
+
+        SmsManager smsManager = SmsManager.getDefault();
+        ArrayList<String> textParts = smsManager.divideMessage(text);
+        // TODO: Some day, notify back about sent and delivered.
+        smsManager.sendMultipartTextMessage(number, null, textParts, null, null);
     }
-
-    String text = command.getText();
-    String number = command.getToNumber();
-
-    SmsManager smsManager = SmsManager.getDefault();
-    ArrayList<String> textParts = smsManager.divideMessage(text);
-    // TODO: Some day, notify back about sent and delivered.
-    smsManager.sendMultipartTextMessage(number, null, textParts, null, null);
-  }
 
 }

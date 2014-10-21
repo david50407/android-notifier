@@ -23,31 +23,32 @@ import android.os.Build;
 
 public class BackupPreferenceListener {
 
-  /**
-   * Real implementation of the listener, which calls the {@link BackupManager}.
-   */
-  private static class BackupPreferencesListenerImpl implements OnSharedPreferenceChangeListener{
-    private final BackupManager backupManager;
+    /**
+     * Real implementation of the listener, which calls the {@link BackupManager}.
+     */
+    private static class BackupPreferencesListenerImpl implements OnSharedPreferenceChangeListener {
+        private final BackupManager backupManager;
 
-    public BackupPreferencesListenerImpl(Context context) {
-      this.backupManager = new BackupManager(context);
+        public BackupPreferencesListenerImpl(Context context) {
+            this.backupManager = new BackupManager(context);
+        }
+
+        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+            backupManager.dataChanged();
+        }
     }
 
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-      backupManager.dataChanged();
+    /**
+     * Creates and returns a proper instance of the listener for this device.
+     */
+    public static OnSharedPreferenceChangeListener create(Context context) {
+        if (Build.VERSION.SDK_INT >= 8) {
+            return new BackupPreferencesListenerImpl(context);
+        } else {
+            return null;
+        }
     }
-  }
 
-  /**
-   * Creates and returns a proper instance of the listener for this device.
-   */
-  public static OnSharedPreferenceChangeListener create(Context context) {
-    if (Build.VERSION.SDK_INT >= 8) {
-      return new BackupPreferencesListenerImpl(context);
-    } else {
-      return null;
+    private BackupPreferenceListener() {
     }
-  }
-
-  private BackupPreferenceListener() {}
 }

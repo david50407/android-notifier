@@ -33,34 +33,34 @@ import android.util.Log;
  * @author Rodrigo Damazio
  */
 class SmsDecoder {
-  private final Context context;
-  private final PhoneNumberUtils numberUtils;
+    private final Context context;
+    private final PhoneNumberUtils numberUtils;
 
-  public SmsDecoder(Context context, PhoneNumberUtils numberUtils) {
-    this.context = context;
-    this.numberUtils = numberUtils;
-  }
-
-  public SmsNotification decodeSms(Object pdu) {
-    SmsMessage message = null;
-    try {
-      message = SmsMessage.createFromPdu((byte[]) pdu);
-    } catch (NullPointerException e) {
-      // Workaround for Android bug
-      // http://code.google.com/p/android/issues/detail?id=11345
-      Log.w(TAG, "Invalid PDU", e);
-      return null;
+    public SmsDecoder(Context context, PhoneNumberUtils numberUtils) {
+        this.context = context;
+        this.numberUtils = numberUtils;
     }
 
-    PhoneNumber number = numberUtils.resolvePhoneNumber(message.getOriginatingAddress());
-    String body = message.getMessageBody();
-    if (body == null) {
-      body = context.getString(R.string.sms_body_unavailable);
-    }
+    public SmsNotification decodeSms(Object pdu) {
+        SmsMessage message = null;
+        try {
+            message = SmsMessage.createFromPdu((byte[]) pdu);
+        } catch (NullPointerException e) {
+            // Workaround for Android bug
+            // http://code.google.com/p/android/issues/detail?id=11345
+            Log.w(TAG, "Invalid PDU", e);
+            return null;
+        }
 
-    return SmsNotification.newBuilder()
-        .setSender(number)
-        .setText(body)
-        .build();
-  }
+        PhoneNumber number = numberUtils.resolvePhoneNumber(message.getOriginatingAddress());
+        String body = message.getMessageBody();
+        if (body == null) {
+            body = context.getString(R.string.sms_body_unavailable);
+        }
+
+        return SmsNotification.newBuilder()
+                .setSender(number)
+                .setText(body)
+                .build();
+    }
 }

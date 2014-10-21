@@ -22,22 +22,22 @@ import org.damazio.notifier.protocol.Notifications.VoicemailNotification;
 import android.telephony.PhoneStateListener;
 
 public class VoicemailListener extends PhoneStateListener {
-  private final EventContext eventContext;
+    private final EventContext eventContext;
 
-  public VoicemailListener(EventContext eventContext) {
-    this.eventContext = eventContext;
-  }
-
-  @Override
-  public void onMessageWaitingIndicatorChanged(boolean mwi) {
-    if (!eventContext.getPreferences().isEventTypeEnabled(Event.Type.NOTIFICATION_VOICEMAIL)) {
-      return;
+    public VoicemailListener(EventContext eventContext) {
+        this.eventContext = eventContext;
     }
 
-    VoicemailNotification notification = VoicemailNotification.newBuilder()
-        .setHasVoicemail(mwi)
-        .build();
+    @Override
+    public void onMessageWaitingIndicatorChanged(boolean mwi) {
+        if (!eventContext.getPreferences().isEventTypeEnabled(Event.Type.NOTIFICATION_VOICEMAIL)) {
+            return;
+        }
 
-    eventContext.getEventManager().handleLocalEvent(Event.Type.NOTIFICATION_VOICEMAIL, notification);
-  }
+        VoicemailNotification notification = VoicemailNotification.newBuilder()
+                .setHasVoicemail(mwi)
+                .build();
+
+        eventContext.getEventManager().handleLocalEvent(Event.Type.NOTIFICATION_VOICEMAIL, notification);
+    }
 }

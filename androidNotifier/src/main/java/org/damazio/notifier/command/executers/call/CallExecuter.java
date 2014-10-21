@@ -29,19 +29,19 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 
 public class CallExecuter implements CommandExecuter {
-  public void executeCommand(Context context, ByteString payload) {
-    CallCommand cmd;
-    try {
-       cmd = CallCommand.parseFrom(payload);
-    } catch (InvalidProtocolBufferException e) {
-      throw new IllegalArgumentException("Unable to parse call command: " + payload, e);
+    public void executeCommand(Context context, ByteString payload) {
+        CallCommand cmd;
+        try {
+            cmd = CallCommand.parseFrom(payload);
+        } catch (InvalidProtocolBufferException e) {
+            throw new IllegalArgumentException("Unable to parse call command: " + payload, e);
+        }
+
+        Log.i(TAG, "Calling " + cmd.getNumber());
+
+        Uri numberUri = Uri.fromParts("tel", cmd.getNumber(), null);
+        Intent intent = new Intent(Intent.ACTION_CALL);
+        intent.setData(numberUri);
+        context.startActivity(intent);
     }
-
-    Log.i(TAG, "Calling " + cmd.getNumber());
-
-    Uri numberUri = Uri.fromParts("tel", cmd.getNumber(), null);
-    Intent intent = new Intent(Intent.ACTION_CALL);
-    intent.setData(numberUri);
-    context.startActivity(intent);
-  }
 }

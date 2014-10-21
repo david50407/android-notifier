@@ -26,11 +26,11 @@ import android.app.backup.SharedPreferencesBackupHelper;
  * @author Rodrigo Damazio
  */
 public class BackupAgent extends BackupAgentHelper {
-  @Override
-  public void onCreate() {
-    super.onCreate();
+    @Override
+    public void onCreate() {
+        super.onCreate();
 
-    addHelper("sharedPrefs", new SharedPreferencesBackupHelper(this, Constants.PREFERENCES_NAME));
-    // TODO: Backup event log
-  }
+        addHelper("sharedPrefs", new SharedPreferencesBackupHelper(this, Constants.PREFERENCES_NAME));
+        // TODO: Backup event log
+    }
 }

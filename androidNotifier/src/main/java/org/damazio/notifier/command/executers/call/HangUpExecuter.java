@@ -22,7 +22,7 @@ import android.content.Context;
 import com.google.protobuf.ByteString;
 
 public class HangUpExecuter implements CommandExecuter {
-  public void executeCommand(Context context, ByteString payload) {
-    // TODO: Implement
-  }
+    public void executeCommand(Context context, ByteString payload) {
+        // TODO: Implement
+    }
 }

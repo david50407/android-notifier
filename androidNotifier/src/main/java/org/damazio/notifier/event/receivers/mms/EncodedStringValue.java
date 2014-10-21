@@ -44,12 +44,12 @@ class EncodedStringValue implements Cloneable {
      * Constructor.
      *
      * @param charset the Char-set value
-     * @param data the Text-string value
+     * @param data    the Text-string value
      * @throws NullPointerException if Text-string value is null.
      */
     public EncodedStringValue(int charset, byte[] data) {
         // TODO: CharSet needs to be validated against MIBEnum.
-        if(null == data) {
+        if (null == data) {
             throw new NullPointerException("EncodedStringValue: Text-string is null.");
         }
 
@@ -115,7 +115,7 @@ class EncodedStringValue implements Cloneable {
      * @throws NullPointerException if Text-string value is null.
      */
     public void setTextString(byte[] textString) {
-        if(null == textString) {
+        if (null == textString) {
             throw new NullPointerException("EncodedStringValue: Text-string is null.");
         }
 
@@ -130,7 +130,7 @@ class EncodedStringValue implements Cloneable {
      *
      * @return The decoded String.
      */
-    public String getString()  {
+    public String getString() {
         if (CharacterSets.ANY_CHARSET == mCharacterSet) {
             return new String(mData); // system default encoding.
         } else {
@@ -138,7 +138,7 @@ class EncodedStringValue implements Cloneable {
                 String name = CharacterSets.getMimeName(mCharacterSet);
                 return new String(mData, name);
             } catch (UnsupportedEncodingException e) {
-            	try {
+                try {
                     return new String(mData, CharacterSets.MIMENAME_ISO_8859_1);
                 } catch (UnsupportedEncodingException _) {
                     return new String(mData); // system default encoding.
@@ -152,14 +152,14 @@ class EncodedStringValue implements Cloneable {
      *
      * @param textString the textString to append
      * @throws NullPointerException if the text String is null
-     *                      or an IOException occured.
+     *                              or an IOException occured.
      */
     public void appendTextString(byte[] textString) {
-        if(null == textString) {
+        if (null == textString) {
             throw new NullPointerException("Text-string is null.");
         }
 
-        if(null == mData) {
+        if (null == mData) {
             mData = new byte[textString.length];
             System.arraycopy(textString, 0, mData, 0, textString.length);
         } else {
@@ -202,7 +202,7 @@ class EncodedStringValue implements Cloneable {
      *
      * @param pattern the delimiting pattern
      * @return the array of encoded strings computed by splitting this encoded
-     *         string around matches of the given pattern
+     * string around matches of the given pattern
      */
     public EncodedStringValue[] split(String pattern) {
         String[] temp = getString().split(pattern);
@@ -263,7 +263,7 @@ class EncodedStringValue implements Cloneable {
 
         return new EncodedStringValue(value.mCharacterSet, value.mData);
     }
-    
+
     public static EncodedStringValue[] encodeStrings(String[] array) {
         int count = array.length;
         if (count > 0) {

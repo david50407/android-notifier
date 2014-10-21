@@ -24,30 +24,30 @@ import android.preference.PreferenceManager;
 
 public class PreferenceActivity extends android.preference.PreferenceActivity {
 
-  private SharedPreferences preferences;
-  private OnSharedPreferenceChangeListener backupListener;
+    private SharedPreferences preferences;
+    private OnSharedPreferenceChangeListener backupListener;
 
-  @Override
-  protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-    preferences = PreferenceManager.getDefaultSharedPreferences(this);
-    backupListener = BackupPreferenceListener.create(this);
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        backupListener = BackupPreferenceListener.create(this);
 
-    addPreferencesFromResource(R.xml.prefs);
-  }
+        addPreferencesFromResource(R.xml.prefs);
+    }
 
-  @Override
-  protected void onStart() {
-    super.onStart();
+    @Override
+    protected void onStart() {
+        super.onStart();
 
-    preferences.registerOnSharedPreferenceChangeListener(backupListener);
-  }
+        preferences.registerOnSharedPreferenceChangeListener(backupListener);
+    }
 
-  @Override
-  protected void onStop() {
-    preferences.unregisterOnSharedPreferenceChangeListener(backupListener);
+    @Override
+    protected void onStop() {
+        preferences.unregisterOnSharedPreferenceChangeListener(backupListener);
 
-    super.onStop();
-  }
+        super.onStop();
+    }
 }

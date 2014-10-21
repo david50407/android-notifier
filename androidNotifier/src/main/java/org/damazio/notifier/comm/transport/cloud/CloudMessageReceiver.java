@@ -16,26 +16,26 @@ import android.util.Log;
 
 public class CloudMessageReceiver extends BroadcastReceiver {
 
-  private static final String EVENT_EXTRA = "event";
+    private static final String EVENT_EXTRA = "event";
 
-  @Override
-  public void onReceive(Context context, Intent intent) {
-    if (!"com.google.android.c2dm.intent.RECEIVE".equals(intent.getAction())) {
-      Log.e(TAG, "Bad C2DM intent: " + intent);
-      return;
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        if (!"com.google.android.c2dm.intent.RECEIVE".equals(intent.getAction())) {
+            Log.e(TAG, "Bad C2DM intent: " + intent);
+            return;
+        }
+
+        // TODO: Handle payload > 1024 bytes
+        byte[] eventBytes = intent.getExtras().getByteArray(EVENT_EXTRA);
+        Event event;
+        try {
+            event = Event.parseFrom(eventBytes);
+        } catch (InvalidProtocolBufferException e) {
+            Log.e(TAG, "Got bad payload: " + Arrays.toString(eventBytes));
+            return;
+        }
+
+        EventManager eventManager = new EventManager(context);
+        eventManager.handleRemoteEvent(event);
     }
-
-    // TODO: Handle payload > 1024 bytes
-    byte[] eventBytes = intent.getExtras().getByteArray(EVENT_EXTRA);
-    Event event;
-    try {
-      event = Event.parseFrom(eventBytes);
-    } catch (InvalidProtocolBufferException e) {
-      Log.e(TAG, "Got bad payload: " + Arrays.toString(eventBytes));
-      return;
-    }
-
-    EventManager eventManager = new EventManager(context);
-    eventManager.handleRemoteEvent(event);
-  }
 }

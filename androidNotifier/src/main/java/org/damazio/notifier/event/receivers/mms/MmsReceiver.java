@@ -29,52 +29,52 @@ import android.content.Intent;
 import android.util.Log;
 
 public class MmsReceiver extends EventBroadcastReceiver {
-  private static final String DATA_TYPE = "application/vnd.wap.mms-message";
+    private static final String DATA_TYPE = "application/vnd.wap.mms-message";
 
-  @Override
-  protected void onReceiveEvent(EventContext context, Intent intent) {
-    if (!DATA_TYPE.equals(intent.getType())) {
-      Log.e(TAG, "Got wrong data type for MMS: " + intent.getType());
-      return;
+    @Override
+    protected void onReceiveEvent(EventContext context, Intent intent) {
+        if (!DATA_TYPE.equals(intent.getType())) {
+            Log.e(TAG, "Got wrong data type for MMS: " + intent.getType());
+            return;
+        }
+
+        // Parse the WAP push contents
+        PduParser parser = new PduParser();
+        PduHeaders headers = parser.parseHeaders(intent.getByteArrayExtra("data"));
+        if (headers == null) {
+            Log.e(TAG, "Couldn't parse headers for WAP PUSH.");
+            return;
+        }
+
+        int messageType = headers.getMessageType();
+        Log.d(TAG, "WAP PUSH message type: 0x" + Integer.toHexString(messageType));
+
+        // Check if it's a MMS notification
+        if (messageType == PduHeaders.MESSAGE_TYPE_NOTIFICATION_IND) {
+            String fromStr = null;
+            EncodedStringValue encodedFrom = headers.getFrom();
+            if (encodedFrom != null) {
+                fromStr = encodedFrom.getString();
+            }
+
+            PhoneNumberUtils numberUtils = context.getNumberUtils();
+            PhoneNumber from = numberUtils.resolvePhoneNumber(fromStr);
+
+            // TODO: Add text/image/etc.
+            MmsNotification mms = MmsNotification.newBuilder()
+                    .setSender(from)
+                    .build();
+            handleEvent(mms);
+        }
     }
 
-    // Parse the WAP push contents
-    PduParser parser = new PduParser();
-    PduHeaders headers = parser.parseHeaders(intent.getByteArrayExtra("data"));
-    if (headers == null) {
-      Log.e(TAG, "Couldn't parse headers for WAP PUSH.");
-      return;
+    @Override
+    protected String getExpectedAction() {
+        return "android.provider.Telephony.WAP_PUSH_RECEIVED";
     }
 
-    int messageType = headers.getMessageType();
-    Log.d(TAG, "WAP PUSH message type: 0x" + Integer.toHexString(messageType));
-
-    // Check if it's a MMS notification
-    if (messageType == PduHeaders.MESSAGE_TYPE_NOTIFICATION_IND) {
-      String fromStr = null;
-      EncodedStringValue encodedFrom = headers.getFrom();
-      if (encodedFrom != null) {
-        fromStr = encodedFrom.getString();
-      }
-      
-      PhoneNumberUtils numberUtils = context.getNumberUtils();
-      PhoneNumber from = numberUtils.resolvePhoneNumber(fromStr);
-
-      // TODO: Add text/image/etc.
-      MmsNotification mms = MmsNotification.newBuilder()
-          .setSender(from)
-          .build();
-      handleEvent(mms);
+    @Override
+    protected Type getEventType() {
+        return Event.Type.NOTIFICATION_MMS;
     }
-  }
-
-  @Override
-  protected String getExpectedAction() {
-    return "android.provider.Telephony.WAP_PUSH_RECEIVED";
-  }
-
-  @Override
-  protected Type getEventType() {
-    return Event.Type.NOTIFICATION_MMS;
-  }
 }

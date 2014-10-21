@@ -26,22 +26,22 @@ import org.damazio.notifier.prefs.Preferences.PreferenceListener;
  */
 public class RemoteEventReceiver implements NotifierServiceModule {
 
-  private final EventContext eventContext;
-  private final PreferenceListener preferenceListener = new PreferenceListener() {
-    // TODO
-  };
+    private final EventContext eventContext;
+    private final PreferenceListener preferenceListener = new PreferenceListener() {
+        // TODO
+    };
 
-  public RemoteEventReceiver(EventContext eventContext) {
-    this.eventContext = eventContext;
-  }
+    public RemoteEventReceiver(EventContext eventContext) {
+        this.eventContext = eventContext;
+    }
 
-  public void onCreate() {
-    // Register to learn about changes in transport methods.
-    // This will also trigger the initial starting of the enabled ones.
-    eventContext.getPreferences().registerListener(preferenceListener, true);
-  }
+    public void onCreate() {
+        // Register to learn about changes in transport methods.
+        // This will also trigger the initial starting of the enabled ones.
+        eventContext.getPreferences().registerListener(preferenceListener, true);
+    }
 
-  public void onDestroy() {
-    eventContext.getPreferences().unregisterListener(preferenceListener);
-  }
+    public void onDestroy() {
+        eventContext.getPreferences().unregisterListener(preferenceListener);
+    }
 }

@@ -38,49 +38,49 @@ import android.util.Log;
  * @author Rodrigo Damazio
  */
 public abstract class EventBroadcastReceiver extends BroadcastReceiver {
-  private EventManager eventManager;
+    private EventManager eventManager;
 
-  @Override
-  public final void onReceive(Context context, Intent intent) {
-    Type eventType = getEventType();
-    if (!intent.getAction().equals(getExpectedAction())) {
-      Log.e(TAG, "Wrong intent received by receiver for " + eventType.name() + ": " + intent.getAction());
-      return;
+    @Override
+    public final void onReceive(Context context, Intent intent) {
+        Type eventType = getEventType();
+        if (!intent.getAction().equals(getExpectedAction())) {
+            Log.e(TAG, "Wrong intent received by receiver for " + eventType.name() + ": " + intent.getAction());
+            return;
+        }
+
+        NotifierService.startIfNotRunning(context);
+
+        Preferences preferences = new Preferences(context);
+        if (!preferences.isEventTypeEnabled(eventType)) {
+            return;
+        }
+
+        synchronized (this) {
+            DeviceManager deviceManager = new DeviceManager();
+            eventManager = new EventManager(context, deviceManager, preferences);
+
+            onReceiveEvent(eventManager.getEventContext(), intent);
+
+            eventManager = null;
+        }
     }
 
-    NotifierService.startIfNotRunning(context);
-
-    Preferences preferences = new Preferences(context);
-    if (!preferences.isEventTypeEnabled(eventType)) {
-      return;
+    protected void handleEvent(MessageLite notification) {
+        eventManager.handleLocalEvent(getEventType(), notification);
     }
 
-    synchronized (this) {
-      DeviceManager deviceManager = new DeviceManager();
-      eventManager = new EventManager(context, deviceManager, preferences);
+    /**
+     * Returns the event type being generated.
+     */
+    protected abstract Event.Type getEventType();
 
-      onReceiveEvent(eventManager.getEventContext(), intent);
+    /**
+     * Returns the broadcast action this receiver handles.
+     */
+    protected abstract String getExpectedAction();
 
-      eventManager = null;
-    }
-  }
-
-  protected void handleEvent(MessageLite notification) {
-    eventManager.handleLocalEvent(getEventType(), notification);
-  }
-
-  /**
-   * Returns the event type being generated.
-   */
-  protected abstract Event.Type getEventType();
-
-  /**
-   * Returns the broadcast action this receiver handles.
-   */
-  protected abstract String getExpectedAction();
-
-  /**
-   * Processes the broadcast intent and calls {@link #handleEvent} with the results.
-   */
-  protected abstract void onReceiveEvent(EventContext context, Intent intent);
+    /**
+     * Processes the broadcast intent and calls {@link #handleEvent} with the results.
+     */
+    protected abstract void onReceiveEvent(EventContext context, Intent intent);
 }

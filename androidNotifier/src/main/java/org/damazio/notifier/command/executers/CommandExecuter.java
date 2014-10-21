@@ -21,6 +21,6 @@ import android.content.Context;
 
 public interface CommandExecuter {
 
-  void executeCommand(Context context, ByteString payload);
+    void executeCommand(Context context, ByteString payload);
 
 }

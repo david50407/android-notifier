@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
    Copyright 2011 Rodrigo Damazio
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,127 +14,137 @@
    limitations under the License.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="org.damazio.notifier"
-          android:versionCode="12"
-          android:versionName="0.3">
+    package="org.damazio.notifier"
+    android:versionCode="12"
+    android:versionName="0.3">
 
-  <application android:icon="@drawable/icon"
-               android:label="@string/app_name"
-               android:hardwareAccelerated="true"
-               android:backupAgent=".prefs.BackupAgent">
-    <!-- Main activity -->
-    <activity android:name=".MainActivity"
-              android:label="@string/settings_title">
-      <intent-filter>
-        <action android:name="android.intent.action.MAIN" />
-        <category android:name="android.intent.category.LAUNCHER" />
-      </intent-filter>
-    </activity>
+    <application
+        android:backupAgent=".prefs.BackupAgent"
+        android:hardwareAccelerated="true"
+        android:icon="@drawable/icon"
+        android:label="@string/app_name">
+        <!-- Main activity -->
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/settings_title">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
-    <!-- Settings activity -->
-    <activity android:name="prefs.PreferenceActivity"
-              android:label="@string/settings_title" />
+        <!-- Settings activity -->
+        <activity
+            android:name=".prefs.PreferenceActivity"
+            android:label="@string/settings_title" />
 
-    <!-- Event log data provider. -->
-    <provider android:name="event.log.EventLogProvider"
-              android:authorities="org.damazio.notifier.eventlog" />
+        <!-- Event log data provider. -->
+        <provider
+            android:name=".event.log.EventLogProvider"
+            android:authorities="org.damazio.notifier.eventlog" />
 
-    <!-- The actual service which listens on events and sends notifications -->
-    <service android:name="NotifierService"
-             android:label="@string/app_name"
-             android:icon="@drawable/icon" />
+        <!-- The actual service which listens on events and sends notifications -->
+        <service
+            android:name="NotifierService"
+            android:icon="@drawable/icon"
+            android:label="@string/app_name" />
 
-    <!-- Receiver which starts the service at boot -->
-    <receiver android:name=".BootServiceStarter">
-      <intent-filter>
-        <action android:name="android.intent.action.BOOT_COMPLETED" />
-      </intent-filter>
-    </receiver>
+        <!-- Receiver which starts the service at boot -->
+        <receiver android:name=".BootServiceStarter">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
 
-    <!-- Event receivers (those that can be registered here) -->
-    <receiver android:name=".event.receivers.phone.RingReceiver">
-      <intent-filter>
-        <action android:name="android.intent.action.PHONE_STATE" />
-      </intent-filter>
-    </receiver>
-    <receiver android:name=".event.receivers.sms.SmsReceiver">
-      <intent-filter>
-        <action android:name="android.provider.Telephony.SMS_RECEIVED" />
-      </intent-filter>
-    </receiver>
-    <receiver android:name=".event.receivers.mms.MmsReceiver">
-      <intent-filter>
-        <action android:name="android.provider.Telephony.WAP_PUSH_RECEIVED" />
-        <data android:mimeType="application/vnd.wap.mms-message" />
-      </intent-filter>
-    </receiver>
-    <receiver android:name=".event.receivers.thirdparty.ThirdPartyReceiver">
-      <intent-filter>
-        <action android:name="org.damazio.notifier.service.UserReceiver.USER_MESSAGE" />
-      </intent-filter>
-    </receiver>
+        <!-- Event receivers (those that can be registered here) -->
+        <receiver android:name=".event.receivers.phone.RingReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.PHONE_STATE" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".event.receivers.sms.SmsReceiver">
+            <intent-filter>
+                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".event.receivers.mms.MmsReceiver">
+            <intent-filter>
+                <action android:name="android.provider.Telephony.WAP_PUSH_RECEIVED" />
+                <data android:mimeType="application/vnd.wap.mms-message" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".event.receivers.thirdparty.ThirdPartyReceiver">
+            <intent-filter>
+                <action android:name="org.damazio.notifier.service.UserReceiver.USER_MESSAGE" />
+            </intent-filter>
+        </receiver>
 
-    <!-- Cloud messaging -->
-    <receiver android:name=".comm.transport.cloud.CloudMessageReceiver"
-              android:permission="com.google.android.c2dm.permission.SEND">
-      <intent-filter>
-          <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-          <category android:name="org.damazio.notifier" />
-      </intent-filter>
-    </receiver>
-    <receiver android:name=".comm.transport.cloud.RegistrationReceiver"
-              android:permission="com.google.android.c2dm.permission.SEND">
-      <intent-filter>
-          <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
-          <category android:name="org.damazio.notifier" />
-      </intent-filter>
-    </receiver>
+        <!-- Cloud messaging -->
+        <receiver
+            android:name=".comm.transport.cloud.CloudMessageReceiver"
+            android:permission="com.google.android.c2dm.permission.SEND">
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <category android:name="org.damazio.notifier" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name=".comm.transport.cloud.RegistrationReceiver"
+            android:permission="com.google.android.c2dm.permission.SEND">
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+                <category android:name="org.damazio.notifier" />
+            </intent-filter>
+        </receiver>
 
-    <!-- Key for backing up preferences to Google's backup service -->
-    <meta-data android:name="com.google.android.backup.api_key"
-               android:value="AEdPqrEAAAAIqP6mL1Nk0PnTfEgJS7Nd2OKLcce1MD-LN62uTA" />
-  </application>
+        <!-- Key for backing up preferences to Google's backup service -->
+        <meta-data
+            android:name="com.google.android.backup.api_key"
+            android:value="AEdPqrEAAAAIqP6mL1Nk0PnTfEgJS7Nd2OKLcce1MD-LN62uTA" />
+    </application>
 
-  <uses-sdk android:minSdkVersion="6" />
-  <supports-screens
-      android:xlargeScreens="true"
-      android:largeScreens="true"
-      android:normalScreens="true"
-      android:smallScreens="true"
-      android:anyDensity="true" />
+    <uses-sdk android:minSdkVersion="6" />
+    <supports-screens
+        android:anyDensity="true"
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:smallScreens="true"
+        android:xlargeScreens="true" />
 
-  <!-- Permissions for catching events -->
-  <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-  <uses-permission android:name="android.permission.READ_CONTACTS" />
-  <uses-permission android:name="android.permission.BATTERY_STATS" />
-  <uses-permission android:name="android.permission.RECEIVE_MMS" />
-  <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <!-- Permissions for catching events -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.BATTERY_STATS" />
+    <uses-permission android:name="android.permission.RECEIVE_MMS" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
 
-  <!-- Permissions for executing commands -->
-  <uses-permission android:name="android.permission.CALL_PHONE" />
-  <uses-permission android:name="android.permission.SEND_SMS" />
+    <!-- Permissions for executing commands -->
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
 
-  <!-- Permissions for notifying -->
-  <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-  <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-  <uses-permission android:name="android.permission.INTERNET" />
-  <uses-permission android:name="android.permission.BLUETOOTH" />
-  <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-  <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <!-- Permissions for notifying -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
-   <!-- Only this application can receive the messages and registration result -->
-   <permission android:name="org.damazio.notifier.permission.C2D_MESSAGE"
-               android:protectionLevel="signature" />
-   <uses-permission android:name="org.damazio.notifier.permission.C2D_MESSAGE" />
-   <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <!-- Only this application can receive the messages and registration result -->
+    <permission
+        android:name="org.damazio.notifier.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
 
-  <!-- Permissions for settings -->
-  <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="org.damazio.notifier.permission.C2D_MESSAGE" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
 
-  <!-- Permissions for starting up -->
-  <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <!-- Permissions for settings -->
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
 
-  <!-- Permissions for bug reporting -->
-  <uses-permission android:name="android.permission.READ_LOGS" />
+    <!-- Permissions for starting up -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <!-- Permissions for bug reporting -->
+    <uses-permission android:name="android.permission.READ_LOGS" />
 </manifest>

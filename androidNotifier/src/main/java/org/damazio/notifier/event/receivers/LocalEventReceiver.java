@@ -39,105 +39,105 @@ import android.util.Log;
  * @author Rodrigo Damazio
  */
 public class LocalEventReceiver implements NotifierServiceModule {
-  private final EventContext eventContext;
+    private final EventContext eventContext;
 
-  private final PreferenceListener preferenceListener = new PreferenceListener() {
-    @Override
-    public synchronized void onSendEventStateChanged(Type type, boolean enabled) {
-      switch (type) {
-        case NOTIFICATION_MISSED_CALL:
-          onMissedCallStateChanged(enabled);
-          break;
-        case NOTIFICATION_BATTERY:
-          onBatteryStateChanged(enabled);
-          break;
-        case NOTIFICATION_VOICEMAIL:
-          onVoicemailStateChanged(enabled);
-          break;
-        case NOTIFICATION_RING:
-        case NOTIFICATION_SMS:
-        case NOTIFICATION_MMS:
-        case NOTIFICATION_THIRD_PARTY:
-          // These come in via global broadcast receivers, nothing to do.
-          break;
-        default:
-          Log.w(TAG, "Unknown event type's state changed: " + type);
-      }
-    }
-  };
+    private final PreferenceListener preferenceListener = new PreferenceListener() {
+        @Override
+        public synchronized void onSendEventStateChanged(Type type, boolean enabled) {
+            switch (type) {
+                case NOTIFICATION_MISSED_CALL:
+                    onMissedCallStateChanged(enabled);
+                    break;
+                case NOTIFICATION_BATTERY:
+                    onBatteryStateChanged(enabled);
+                    break;
+                case NOTIFICATION_VOICEMAIL:
+                    onVoicemailStateChanged(enabled);
+                    break;
+                case NOTIFICATION_RING:
+                case NOTIFICATION_SMS:
+                case NOTIFICATION_MMS:
+                case NOTIFICATION_THIRD_PARTY:
+                    // These come in via global broadcast receivers, nothing to do.
+                    break;
+                default:
+                    Log.w(TAG, "Unknown event type's state changed: " + type);
+            }
+        }
+    };
 
-  private VoicemailListener voicemailListener;
-  private BatteryEventReceiver batteryReceiver;
-  private MissedCallListener missedCallListener;
+    private VoicemailListener voicemailListener;
+    private BatteryEventReceiver batteryReceiver;
+    private MissedCallListener missedCallListener;
 
-  public LocalEventReceiver(EventContext eventContext) {
-    this.eventContext = eventContext;
-  }
-
-  public void onCreate() {
-    if (voicemailListener != null) {
-      throw new IllegalStateException("Already started");
+    public LocalEventReceiver(EventContext eventContext) {
+        this.eventContext = eventContext;
     }
 
-    // Register for preference changes, and also do an initial notification of
-    // the current values.
-    eventContext.getPreferences().registerListener(preferenceListener, true);
-  }
+    public void onCreate() {
+        if (voicemailListener != null) {
+            throw new IllegalStateException("Already started");
+        }
 
-  public void onDestroy() {
-    eventContext.getPreferences().unregisterListener(preferenceListener);
-
-    // Disable all events.
-    onMissedCallStateChanged(false);
-    onBatteryStateChanged(false);
-    onVoicemailStateChanged(false);
-  }
-
-  private synchronized void onVoicemailStateChanged(boolean enabled) {
-    if (voicemailListener != null ^ !enabled) {
-      Log.d(TAG, "Voicemail state didn't change");
-      return;
+        // Register for preference changes, and also do an initial notification of
+        // the current values.
+        eventContext.getPreferences().registerListener(preferenceListener, true);
     }
 
-    TelephonyManager telephonyManager = (TelephonyManager) eventContext.getAndroidContext().getSystemService(Context.TELEPHONY_SERVICE);
-    if (enabled) {
-      voicemailListener = new VoicemailListener(eventContext);
-      telephonyManager.listen(voicemailListener, PhoneStateListener.LISTEN_MESSAGE_WAITING_INDICATOR);
-    } else {
-      telephonyManager.listen(voicemailListener, PhoneStateListener.LISTEN_NONE);
-      voicemailListener = null;
-    }
-  }
+    public void onDestroy() {
+        eventContext.getPreferences().unregisterListener(preferenceListener);
 
-  private void onBatteryStateChanged(boolean enabled) {
-    if (batteryReceiver != null ^ !enabled) {
-      Log.d(TAG, "Battery state didn't change");
-      return;
+        // Disable all events.
+        onMissedCallStateChanged(false);
+        onBatteryStateChanged(false);
+        onVoicemailStateChanged(false);
     }
 
-    if (enabled) {
-      // Register the battery receiver
-      // (can't be registered in the manifest for some reason)
-      batteryReceiver = new BatteryEventReceiver();
-      eventContext.getAndroidContext().registerReceiver(
-          batteryReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-    } else {
-      eventContext.getAndroidContext().unregisterReceiver(batteryReceiver);
-    }
-  }
+    private synchronized void onVoicemailStateChanged(boolean enabled) {
+        if (voicemailListener != null ^ !enabled) {
+            Log.d(TAG, "Voicemail state didn't change");
+            return;
+        }
 
-  private synchronized void onMissedCallStateChanged(boolean enabled) {
-    if (missedCallListener != null ^ !enabled) {
-      Log.d(TAG, "Missed call state didn't change");
-      return;
+        TelephonyManager telephonyManager = (TelephonyManager) eventContext.getAndroidContext().getSystemService(Context.TELEPHONY_SERVICE);
+        if (enabled) {
+            voicemailListener = new VoicemailListener(eventContext);
+            telephonyManager.listen(voicemailListener, PhoneStateListener.LISTEN_MESSAGE_WAITING_INDICATOR);
+        } else {
+            telephonyManager.listen(voicemailListener, PhoneStateListener.LISTEN_NONE);
+            voicemailListener = null;
+        }
     }
 
-    if (enabled) {
-      missedCallListener = new MissedCallListener(eventContext);
-      missedCallListener.onCreate();
-    } else {
-      missedCallListener.onDestroy();
-      missedCallListener = null;
+    private void onBatteryStateChanged(boolean enabled) {
+        if (batteryReceiver != null ^ !enabled) {
+            Log.d(TAG, "Battery state didn't change");
+            return;
+        }
+
+        if (enabled) {
+            // Register the battery receiver
+            // (can't be registered in the manifest for some reason)
+            batteryReceiver = new BatteryEventReceiver();
+            eventContext.getAndroidContext().registerReceiver(
+                    batteryReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        } else {
+            eventContext.getAndroidContext().unregisterReceiver(batteryReceiver);
+        }
     }
-  }
+
+    private synchronized void onMissedCallStateChanged(boolean enabled) {
+        if (missedCallListener != null ^ !enabled) {
+            Log.d(TAG, "Missed call state didn't change");
+            return;
+        }
+
+        if (enabled) {
+            missedCallListener = new MissedCallListener(eventContext);
+            missedCallListener.onCreate();
+        } else {
+            missedCallListener.onDestroy();
+            missedCallListener = null;
+        }
+    }
 }

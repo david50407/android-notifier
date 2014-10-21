@@ -39,150 +39,165 @@ import android.content.Intent;
 import android.os.IBinder;
 
 public class NotifierService extends Service {
-  /** An independent module which has the same lifecycle as the service. */
-  public static interface NotifierServiceModule {
-    void onCreate();
-    void onDestroy();
-  }
+    /**
+     * An independent module which has the same lifecycle as the service.
+     */
+    public static interface NotifierServiceModule {
+        void onCreate();
 
-  private final PreferenceListener preferencesListener = new PreferenceListener() {
+        void onDestroy();
+    }
+
+    private final PreferenceListener preferencesListener = new PreferenceListener() {
+        @Override
+        public void onStartForegroundChanged(boolean startForeground) {
+            updateForegroundState(startForeground);
+        }
+    };
+
+    private Preferences preferences;
+
+    private DeviceManager deviceManager;
+
+    /**
+     * Manages events and the event log.
+     */
+    private EventManager eventManager;
+
+    /**
+     * Receives events from other devices.
+     */
+    private RemoteEventReceiver remoteEventReceiver;
+
+    /**
+     * Receives events from the local system.
+     */
+    private LocalEventReceiver localEventReceiver;
+
+    /**
+     * Sends events to other devices.
+     */
+    private LocalEventSender localEventSender;
+
+    /**
+     * Executes remote commands locally.
+     */
+    private RemoteCommandExecuter commandExecuter;
+
+    /**
+     * Displays remote notifications locally.
+     */
+    private RemoteNotificationDisplayer notificationDisplayer;
+
     @Override
-    public void onStartForegroundChanged(boolean startForeground) {
-      updateForegroundState(startForeground);
-    }
-  };
+    public void onCreate() {
+        super.onCreate();
 
-  private Preferences preferences;
+        preferences = new Preferences(this);
+        preferences.registerListener(preferencesListener);
 
-  private DeviceManager deviceManager;
+        updateForegroundState(preferences.startForeground());
 
-  /** Manages events and the event log. */
-  private EventManager eventManager;
+        deviceManager = new DeviceManager();
+        eventManager = new EventManager(this, deviceManager, preferences);
+        EventContext eventContext = new EventContext(this, eventManager, deviceManager, preferences);
 
-  /** Receives events from other devices. */
-  private RemoteEventReceiver remoteEventReceiver;
+        // Modules (external-event-driven)
+        remoteEventReceiver = new RemoteEventReceiver(eventContext);
+        localEventReceiver = new LocalEventReceiver(eventContext);
+        remoteEventReceiver.onCreate();
+        localEventReceiver.onCreate();
 
-  /** Receives events from the local system. */
-  private LocalEventReceiver localEventReceiver;
-
-  /** Sends events to other devices. */
-  private LocalEventSender localEventSender;
-
-  /** Executes remote commands locally. */
-  private RemoteCommandExecuter commandExecuter;
-
-  /** Displays remote notifications locally. */
-  private RemoteNotificationDisplayer notificationDisplayer;
-
-  @Override
-  public void onCreate() {
-    super.onCreate();
-
-    preferences = new Preferences(this);
-    preferences.registerListener(preferencesListener);
-
-    updateForegroundState(preferences.startForeground());
-
-    deviceManager = new DeviceManager();
-    eventManager = new EventManager(this, deviceManager, preferences);
-    EventContext eventContext = new EventContext(this, eventManager, deviceManager, preferences);
-
-    // Modules (external-event-driven)
-    remoteEventReceiver = new RemoteEventReceiver(eventContext);
-    localEventReceiver = new LocalEventReceiver(eventContext);
-    remoteEventReceiver.onCreate();
-    localEventReceiver.onCreate();
-
-    // Event-log-driven
-    localEventSender = new LocalEventSender(eventContext);
-    localEventSender.onCreate();
-    commandExecuter = new RemoteCommandExecuter();
-    notificationDisplayer = new RemoteNotificationDisplayer();
-    eventManager.registerEventListeners(localEventSender, commandExecuter, notificationDisplayer);
-  }
-
-  private void updateForegroundState(boolean startForeground) {
-    if (startForeground) {
-      startForeground();
-    } else {
-      stopForeground(true);
-    }
-  }
-
-  private void startForeground() {
-    PendingIntent intent = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0);
-    Notification notification = new Notification(R.drawable.icon, null /* ticker */, System.currentTimeMillis());
-    notification.setLatestEventInfo(this, getString(R.string.notification_title), getString(R.string.notification_text), intent);
-    notification.flags |= Notification.FLAG_NO_CLEAR;
-    notification.flags |= Notification.FLAG_ONGOING_EVENT;
-
-    // TODO: Ensure this never collides with event display notification IDs
-    startForeground(0x91287346, notification);
-  }
-
-  @Override
-  public void onStart(Intent intent, int startId) {
-    handleCommand(intent);
-  }
-
-  @Override
-  public int onStartCommand(Intent intent, int flags, int startId) {
-    handleCommand(intent);
-    return START_STICKY;
-  }
-
-  private void handleCommand(Intent intent) {
-    // TODO: Intents for locale and otherss
-  }
-
-  @Override
-  public IBinder onBind(Intent intent) {
-    return null;
-  }
-
-  @Override
-  public void onDestroy() {
-    preferences.unregisterListener(preferencesListener);
-    eventManager.unregisterEventListeners(localEventSender, commandExecuter, notificationDisplayer);
-
-    localEventReceiver.onDestroy();
-    remoteEventReceiver.onDestroy();
-
-    stopForeground(true);
-
-    super.onDestroy();
-  }
-
-  @Override
-  public void onLowMemory() {
-    // TODO: We run in the foreground, so it's probably polite to do something here.
-  }
-
-  public static void startIfNotRunning(Context context) {
-    if (!isRunning(context)) {
-      context.startService(new Intent(context, NotifierService.class));
-    }
-  }
-
-  /**
-   * Uses the given context to determine whether the service is already running.
-   */
-  public static boolean isRunning(Context context) {
-    ActivityManager activityManager = (ActivityManager) context.getSystemService(ACTIVITY_SERVICE);
-    List<RunningServiceInfo> services = activityManager.getRunningServices(Integer.MAX_VALUE);
-
-    for (RunningServiceInfo serviceInfo : services) {
-      ComponentName componentName = serviceInfo.service;
-      String serviceName = componentName.getClassName();
-      if (serviceName.equals(NotifierService.class.getName())) {
-        return true;
-      }
+        // Event-log-driven
+        localEventSender = new LocalEventSender(eventContext);
+        localEventSender.onCreate();
+        commandExecuter = new RemoteCommandExecuter();
+        notificationDisplayer = new RemoteNotificationDisplayer();
+        eventManager.registerEventListeners(localEventSender, commandExecuter, notificationDisplayer);
     }
 
-    return false;
-  }
+    private void updateForegroundState(boolean startForeground) {
+        if (startForeground) {
+            startForeground();
+        } else {
+            stopForeground(true);
+        }
+    }
 
-  protected Preferences getPreferences() {
-    return preferences;
-  }
+    private void startForeground() {
+        PendingIntent intent = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0);
+        Notification notification = new Notification(R.drawable.icon, null /* ticker */, System.currentTimeMillis());
+        notification.setLatestEventInfo(this, getString(R.string.notification_title), getString(R.string.notification_text), intent);
+        notification.flags |= Notification.FLAG_NO_CLEAR;
+        notification.flags |= Notification.FLAG_ONGOING_EVENT;
+
+        // TODO: Ensure this never collides with event display notification IDs
+        startForeground(0x91287346, notification);
+    }
+
+    @Override
+    public void onStart(Intent intent, int startId) {
+        handleCommand(intent);
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        handleCommand(intent);
+        return START_STICKY;
+    }
+
+    private void handleCommand(Intent intent) {
+        // TODO: Intents for locale and otherss
+    }
+
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
+
+    @Override
+    public void onDestroy() {
+        preferences.unregisterListener(preferencesListener);
+        eventManager.unregisterEventListeners(localEventSender, commandExecuter, notificationDisplayer);
+
+        localEventReceiver.onDestroy();
+        remoteEventReceiver.onDestroy();
+
+        stopForeground(true);
+
+        super.onDestroy();
+    }
+
+    @Override
+    public void onLowMemory() {
+        // TODO: We run in the foreground, so it's probably polite to do something here.
+    }
+
+    public static void startIfNotRunning(Context context) {
+        if (!isRunning(context)) {
+            context.startService(new Intent(context, NotifierService.class));
+        }
+    }
+
+    /**
+     * Uses the given context to determine whether the service is already running.
+     */
+    public static boolean isRunning(Context context) {
+        ActivityManager activityManager = (ActivityManager) context.getSystemService(ACTIVITY_SERVICE);
+        List<RunningServiceInfo> services = activityManager.getRunningServices(Integer.MAX_VALUE);
+
+        for (RunningServiceInfo serviceInfo : services) {
+            ComponentName componentName = serviceInfo.service;
+            String serviceName = componentName.getClassName();
+            if (serviceName.equals(NotifierService.class.getName())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    protected Preferences getPreferences() {
+        return preferences;
+    }
 }

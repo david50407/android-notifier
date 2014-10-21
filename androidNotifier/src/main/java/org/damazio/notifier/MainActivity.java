@@ -22,11 +22,13 @@ import android.content.Intent;
 import android.os.Bundle;
 
 public class MainActivity extends Activity {
-  @Override
-  protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-    // For now, just go to preferences.
-    startActivity(new Intent(this, PreferenceActivity.class));
-  }
+        // For now, just go to preferences.
+        Intent intent = new Intent(this, PreferenceActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        startActivity(intent);
+    }
 }

@@ -34,38 +34,38 @@ import javax.crypto.spec.IvParameterSpec;
  */
 public class Coder {
 
-  static final String ENCRYPTION_ALGORITHM = "AES/CBC/PKCS7Padding";
+    static final String ENCRYPTION_ALGORITHM = "AES/CBC/PKCS7Padding";
 
-  private final PassKey key;
+    private final PassKey key;
 
-  public Coder(PassKey key) {
-    this.key = key;
-  }
+    public Coder(PassKey key) {
+        this.key = key;
+    }
 
-  public byte[] encrypt(byte[] unencrypted) throws GeneralSecurityException {
-    return doCipher(unencrypted, Cipher.ENCRYPT_MODE);
-  }
+    public byte[] encrypt(byte[] unencrypted) throws GeneralSecurityException {
+        return doCipher(unencrypted, Cipher.ENCRYPT_MODE);
+    }
 
-  public byte[] decrypt(byte[] encrypted) throws GeneralSecurityException {
-    return doCipher(encrypted, Cipher.DECRYPT_MODE);
-  }
+    public byte[] decrypt(byte[] encrypted) throws GeneralSecurityException {
+        return doCipher(encrypted, Cipher.DECRYPT_MODE);
+    }
 
-  private byte[] doCipher(byte[] original, int mode) throws GeneralSecurityException {
-    Cipher cipher = createCipher(mode);
-    return cipher.doFinal(original);
-  }
+    private byte[] doCipher(byte[] original, int mode) throws GeneralSecurityException {
+        Cipher cipher = createCipher(mode);
+        return cipher.doFinal(original);
+    }
 
-  public InputStream wrapInputStream(InputStream inputStream) throws GeneralSecurityException {
-    return new CipherInputStream(inputStream, createCipher(Cipher.DECRYPT_MODE));
-  }
+    public InputStream wrapInputStream(InputStream inputStream) throws GeneralSecurityException {
+        return new CipherInputStream(inputStream, createCipher(Cipher.DECRYPT_MODE));
+    }
 
-  public OutputStream wrapOutputStream(OutputStream outputStream) throws GeneralSecurityException {
-    return new CipherOutputStream(outputStream, createCipher(Cipher.ENCRYPT_MODE));
-  }
+    public OutputStream wrapOutputStream(OutputStream outputStream) throws GeneralSecurityException {
+        return new CipherOutputStream(outputStream, createCipher(Cipher.ENCRYPT_MODE));
+    }
 
-  private Cipher createCipher(int mode) throws GeneralSecurityException {
-    Cipher cipher = Cipher.getInstance(ENCRYPTION_ALGORITHM);
-    cipher.init(mode, key.getKeySpec(), new IvParameterSpec(key.getInitVector()));
-    return cipher;
-  }
+    private Cipher createCipher(int mode) throws GeneralSecurityException {
+        Cipher cipher = Cipher.getInstance(ENCRYPTION_ALGORITHM);
+        cipher.init(mode, key.getKeySpec(), new IvParameterSpec(key.getInitVector()));
+        return cipher;
+    }
 }

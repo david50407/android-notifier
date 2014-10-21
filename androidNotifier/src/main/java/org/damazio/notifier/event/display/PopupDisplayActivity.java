@@ -28,20 +28,20 @@ import android.os.Bundle;
  * @author Rodrigo Damazio
  */
 public class PopupDisplayActivity extends Activity {
-  
-  public static final String EXTRA_POPUP_TEXT = "popup_text";
 
-  @Override
-  public void onCreate(Bundle savedState) {
-    Intent intent = getIntent();
-    String text = intent.getStringExtra(EXTRA_POPUP_TEXT);
+    public static final String EXTRA_POPUP_TEXT = "popup_text";
 
-    AlertDialog popup = new AlertDialog.Builder(this)
-        .setCancelable(true)
-        .setTitle(R.string.popup_display_title)
-        .setMessage(text)
-        .setNeutralButton(android.R.string.ok, null)
-        .create();
-    popup.show();
-  }
+    @Override
+    public void onCreate(Bundle savedState) {
+        Intent intent = getIntent();
+        String text = intent.getStringExtra(EXTRA_POPUP_TEXT);
+
+        AlertDialog popup = new AlertDialog.Builder(this)
+                .setCancelable(true)
+                .setTitle(R.string.popup_display_title)
+                .setMessage(text)
+                .setNeutralButton(android.R.string.ok, null)
+                .create();
+        popup.show();
+    }
 }

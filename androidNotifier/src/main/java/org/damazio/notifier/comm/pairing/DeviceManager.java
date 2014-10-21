@@ -6,26 +6,26 @@ import java.util.Map;
 
 public class DeviceManager {
 
-  public static class Device {
-    public final long deviceId;
-    public final String ipAddress;
-    public final String bluetoothAddress;
+    public static class Device {
+        public final long deviceId;
+        public final String ipAddress;
+        public final String bluetoothAddress;
 
-    public Device(long deviceId, String ipAddress, String bluetoothAddress) {
-      this.deviceId = deviceId;
-      this.ipAddress = ipAddress;
-      this.bluetoothAddress = bluetoothAddress;
+        public Device(long deviceId, String ipAddress, String bluetoothAddress) {
+            this.deviceId = deviceId;
+            this.ipAddress = ipAddress;
+            this.bluetoothAddress = bluetoothAddress;
+        }
     }
-  }
 
-  private final Map<Long, Device> devicesById =
-      new HashMap<Long, DeviceManager.Device>();
+    private final Map<Long, Device> devicesById =
+            new HashMap<Long, DeviceManager.Device>();
 
-  public Device getDeviceForId(long deviceId) {
-    return devicesById.get(deviceId);
-  }
+    public Device getDeviceForId(long deviceId) {
+        return devicesById.get(deviceId);
+    }
 
-  public Collection<Device> getAllDevices() {
-    return devicesById.values();
-  }
+    public Collection<Device> getAllDevices() {
+        return devicesById.values();
+    }
 }

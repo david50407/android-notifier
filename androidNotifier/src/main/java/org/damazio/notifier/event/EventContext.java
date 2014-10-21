@@ -22,40 +22,40 @@ import org.damazio.notifier.prefs.Preferences;
 import android.content.Context;
 
 public class EventContext {
-  private final Context context;
-  private final EventManager eventManager;
-  private final DeviceManager deviceManager;
-  private final Preferences preferences;
-  private PhoneNumberUtils numberUtils;
+    private final Context context;
+    private final EventManager eventManager;
+    private final DeviceManager deviceManager;
+    private final Preferences preferences;
+    private PhoneNumberUtils numberUtils;
 
-  public EventContext(Context context, EventManager eventManager,
-      DeviceManager deviceManager, Preferences preferences) {
-    this.context = context;
-    this.eventManager = eventManager;
-    this.preferences = preferences;
-    this.deviceManager = deviceManager;
-  }
-
-  public synchronized PhoneNumberUtils getNumberUtils() {
-    if (numberUtils == null) {
-      numberUtils = new PhoneNumberUtils(context);
+    public EventContext(Context context, EventManager eventManager,
+                        DeviceManager deviceManager, Preferences preferences) {
+        this.context = context;
+        this.eventManager = eventManager;
+        this.preferences = preferences;
+        this.deviceManager = deviceManager;
     }
-    return numberUtils;
-  }
 
-  public Context getAndroidContext() {
-    return context;
-  }
+    public synchronized PhoneNumberUtils getNumberUtils() {
+        if (numberUtils == null) {
+            numberUtils = new PhoneNumberUtils(context);
+        }
+        return numberUtils;
+    }
 
-  public Preferences getPreferences() {
-    return preferences;
-  }
+    public Context getAndroidContext() {
+        return context;
+    }
 
-  public EventManager getEventManager() {
-    return eventManager;
-  }
+    public Preferences getPreferences() {
+        return preferences;
+    }
 
-  public DeviceManager getDeviceManager() {
-    return deviceManager;
-  }
+    public EventManager getEventManager() {
+        return eventManager;
+    }
+
+    public DeviceManager getDeviceManager() {
+        return deviceManager;
+    }
 }

@@ -29,38 +29,40 @@ import android.util.Log;
 
 public class LogDbHelper extends SQLiteOpenHelper {
 
-  private static final int CURRENT_DB_VERSION = 1;
-  private static final String DB_NAME = "eventlog";
-  private final Context context;
+    private static final int CURRENT_DB_VERSION = 1;
+    private static final String DB_NAME = "eventlog";
+    private final Context context;
 
-  public LogDbHelper(Context context) {
-    super(context, DB_NAME, null, CURRENT_DB_VERSION);
+    public LogDbHelper(Context context) {
+        super(context, DB_NAME, null, CURRENT_DB_VERSION);
 
-    this.context = context;
-  }
-
-  @Override
-  public void onCreate(SQLiteDatabase db) {
-    InputStream schemaStream = context.getResources().openRawResource(R.raw.logdb_schema);
-    Scanner schemaScanner = new Scanner(schemaStream, "UTF-8");
-    schemaScanner.useDelimiter(";");
-
-    Log.i(TAG, "Creating database");
-    try {
-      db.beginTransaction();
-      while (schemaScanner.hasNext()) {
-        String statement = schemaScanner.next();
-        Log.d(TAG, "Creating database: " + statement);
-        db.execSQL(statement);
-      }
-      db.setTransactionSuccessful();
-    } finally {
-      db.endTransaction();
+        this.context = context;
     }
-  }
 
-  @Override
-  public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-    // No upgrade for now.
-  }
+    @Override
+    public void onCreate(SQLiteDatabase db) {
+        InputStream schemaStream = context.getResources().openRawResource(R.raw.logdb_schema);
+        Scanner schemaScanner = new Scanner(schemaStream, "UTF-8");
+        schemaScanner.useDelimiter(";");
+
+        Log.i(TAG, "Creating database");
+        try {
+            db.beginTransaction();
+            while (schemaScanner.hasNext()) {
+                String statement = schemaScanner.next();
+                if (statement.isEmpty())
+                    break;
+                Log.d(TAG, "Creating database: " + statement);
+                db.execSQL(statement);
+            }
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+        }
+    }
+
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        // No upgrade for now.
+    }
 }

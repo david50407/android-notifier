@@ -5,8 +5,8 @@ android {
     buildToolsVersion '20.0.0'
     defaultConfig {
         applicationId 'org.damazio.notifier'
-        minSdkVersion 6
-        targetSdkVersion 6
+        minSdkVersion 9
+        targetSdkVersion 9
     }
     buildTypes {
         release {

@@ -36,140 +36,143 @@ import android.util.Log;
  */
 public class EventLogProvider extends ContentProvider {
 
-  /** If at least this many rows are deleted, we'll vacuum the database. */
-  private static final int VACUUM_DELETION_TRESHOLD = 100;
-  
-  private static final int MATCH_DIR = 1;
-  private static final int MATCH_ITEM = 2;
+    /**
+     * If at least this many rows are deleted, we'll vacuum the database.
+     */
+    private static final int VACUUM_DELETION_TRESHOLD = 100;
 
-  private LogDbHelper dbHelper;
-  private SQLiteDatabase db;
+    private static final int MATCH_DIR = 1;
+    private static final int MATCH_ITEM = 2;
 
-  private UriMatcher uriMatcher;
+    private LogDbHelper dbHelper;
+    private SQLiteDatabase db;
 
-  private ContentResolver contentResolver;
+    private UriMatcher uriMatcher;
 
-  public EventLogProvider() {
-    this.uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-    uriMatcher.addURI(EventLogColumns.URI_AUTHORITY, "events", MATCH_DIR);
-    uriMatcher.addURI(EventLogColumns.URI_AUTHORITY, "events/#", MATCH_ITEM);
-  }
+    private ContentResolver contentResolver;
 
-  @Override
-  public boolean onCreate() {
-    this.contentResolver = getContext().getContentResolver();
-    this.dbHelper = new LogDbHelper(getContext());
-    this.db = dbHelper.getWritableDatabase();
-    return db != null;
-  }
-
-  @Override
-  public int delete(Uri uri, String selection, String[] selectionArgs) {
-    // TODO: Extract
-    if (matchUriOrThrow(uri) == MATCH_ITEM) {
-      String id = uri.getLastPathSegment();
-      if (selection != null) {
-        selection = "(" + selection + ") AND _id = ?";
-      } else {
-        selection = "_id = ?";
-      }
-      if (selectionArgs != null) {
-        selectionArgs = Arrays.copyOf(selectionArgs, selectionArgs.length + 1);
-      } else {
-        selectionArgs = new String[1];
-      }
-      selectionArgs[selectionArgs.length - 1] = id;
+    public EventLogProvider() {
+        this.uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+        uriMatcher.addURI(EventLogColumns.URI_AUTHORITY, "events", MATCH_DIR);
+        uriMatcher.addURI(EventLogColumns.URI_AUTHORITY, "events/#", MATCH_ITEM);
     }
 
-    int rows = db.delete(EventLogColumns.TABLE_NAME, selection, selectionArgs);
-
-    contentResolver.notifyChange(uri, null);
-
-    if (rows > VACUUM_DELETION_TRESHOLD) {
-      Log.i(TAG, "Vacuuming the database");
-      db.execSQL("VACUUM");
+    @Override
+    public boolean onCreate() {
+        this.contentResolver = getContext().getContentResolver();
+        this.dbHelper = new LogDbHelper(getContext());
+        this.db = dbHelper.getWritableDatabase();
+        return db != null;
     }
 
-    return rows;
-  }
-  @Override
-  public String getType(Uri uri) {
-    switch (uriMatcher.match(uri)) {
-      case MATCH_DIR:
-        return EventLogColumns.TABLE_TYPE;
-      case MATCH_ITEM:
-        return EventLogColumns.ITEM_TYPE;
-      default:
-        throw new IllegalArgumentException("Invalid URI type for '" + uri + "'.");
-    }
-  }
+    @Override
+    public int delete(Uri uri, String selection, String[] selectionArgs) {
+        // TODO: Extract
+        if (matchUriOrThrow(uri) == MATCH_ITEM) {
+            String id = uri.getLastPathSegment();
+            if (selection != null) {
+                selection = "(" + selection + ") AND _id = ?";
+            } else {
+                selection = "_id = ?";
+            }
+            if (selectionArgs != null) {
+                selectionArgs = Arrays.copyOf(selectionArgs, selectionArgs.length + 1);
+            } else {
+                selectionArgs = new String[1];
+            }
+            selectionArgs[selectionArgs.length - 1] = id;
+        }
 
-  @Override
-  public Uri insert(Uri uri, ContentValues values) {
-    if (matchUriOrThrow(uri) != MATCH_DIR) {
-      throw new IllegalStateException("Cannot insert inside an item");
-    }
+        int rows = db.delete(EventLogColumns.TABLE_NAME, selection, selectionArgs);
 
-    long rowId = db.insertOrThrow(EventLogColumns.TABLE_NAME, null, values);
-    Uri insertedUri = ContentUris.withAppendedId(uri, rowId);
-    contentResolver.notifyChange(insertedUri, null);
-    return insertedUri;
-  }
+        contentResolver.notifyChange(uri, null);
 
-  @Override
-  public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs,
-      String sortOrder) {
-    if (matchUriOrThrow(uri) == MATCH_ITEM) {
-      String id = uri.getLastPathSegment();
-      if (selection != null) {
-        selection = "(" + selection + ") AND _id = ?";
-      } else {
-        selection = "_id = ?";
-      }
-      if (selectionArgs != null) {
-        selectionArgs = Arrays.copyOf(selectionArgs, selectionArgs.length + 1);
-      } else {
-        selectionArgs = new String[1];
-      }
-      selectionArgs[selectionArgs.length - 1] = id;
+        if (rows > VACUUM_DELETION_TRESHOLD) {
+            Log.i(TAG, "Vacuuming the database");
+            db.execSQL("VACUUM");
+        }
+
+        return rows;
     }
 
-    Cursor cursor = db.query(EventLogColumns.TABLE_NAME, projection, selection, selectionArgs,
-        null, null, sortOrder);
-    cursor.setNotificationUri(contentResolver, uri);
-    return cursor;
-  }
-
-  @Override
-  public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-    if (matchUriOrThrow(uri) == MATCH_ITEM) {
-      String id = uri.getLastPathSegment();
-      if (selection != null) {
-        selection = "(" + selection + ") AND _id = ?";
-      } else {
-        selection = "_id = ?";
-      }
-      if (selectionArgs != null) {
-        selectionArgs = Arrays.copyOf(selectionArgs, selectionArgs.length + 1);
-      } else {
-        selectionArgs = new String[1];
-      }
-      selectionArgs[selectionArgs.length - 1] = id;
+    @Override
+    public String getType(Uri uri) {
+        switch (uriMatcher.match(uri)) {
+            case MATCH_DIR:
+                return EventLogColumns.TABLE_TYPE;
+            case MATCH_ITEM:
+                return EventLogColumns.ITEM_TYPE;
+            default:
+                throw new IllegalArgumentException("Invalid URI type for '" + uri + "'.");
+        }
     }
 
-    int numRows = db.update(EventLogColumns.TABLE_NAME, values, selection, selectionArgs);
+    @Override
+    public Uri insert(Uri uri, ContentValues values) {
+        if (matchUriOrThrow(uri) != MATCH_DIR) {
+            throw new IllegalStateException("Cannot insert inside an item");
+        }
 
-    contentResolver.notifyChange(uri, null);
-
-    return numRows;
-  }
-
-
-  private int matchUriOrThrow(Uri uri) {
-    int match = uriMatcher.match(uri);
-    if (match == UriMatcher.NO_MATCH) {
-      throw new IllegalArgumentException("Invalid URI type for '" + uri + "'.");
+        long rowId = db.insertOrThrow(EventLogColumns.TABLE_NAME, null, values);
+        Uri insertedUri = ContentUris.withAppendedId(uri, rowId);
+        contentResolver.notifyChange(insertedUri, null);
+        return insertedUri;
     }
-    return match;
-  }
+
+    @Override
+    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs,
+                        String sortOrder) {
+        if (matchUriOrThrow(uri) == MATCH_ITEM) {
+            String id = uri.getLastPathSegment();
+            if (selection != null) {
+                selection = "(" + selection + ") AND _id = ?";
+            } else {
+                selection = "_id = ?";
+            }
+            if (selectionArgs != null) {
+                selectionArgs = Arrays.copyOf(selectionArgs, selectionArgs.length + 1);
+            } else {
+                selectionArgs = new String[1];
+            }
+            selectionArgs[selectionArgs.length - 1] = id;
+        }
+
+        Cursor cursor = db.query(EventLogColumns.TABLE_NAME, projection, selection, selectionArgs,
+                null, null, sortOrder);
+        cursor.setNotificationUri(contentResolver, uri);
+        return cursor;
+    }
+
+    @Override
+    public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+        if (matchUriOrThrow(uri) == MATCH_ITEM) {
+            String id = uri.getLastPathSegment();
+            if (selection != null) {
+                selection = "(" + selection + ") AND _id = ?";
+            } else {
+                selection = "_id = ?";
+            }
+            if (selectionArgs != null) {
+                selectionArgs = Arrays.copyOf(selectionArgs, selectionArgs.length + 1);
+            } else {
+                selectionArgs = new String[1];
+            }
+            selectionArgs[selectionArgs.length - 1] = id;
+        }
+
+        int numRows = db.update(EventLogColumns.TABLE_NAME, values, selection, selectionArgs);
+
+        contentResolver.notifyChange(uri, null);
+
+        return numRows;
+    }
+
+
+    private int matchUriOrThrow(Uri uri) {
+        int match = uriMatcher.match(uri);
+        if (match == UriMatcher.NO_MATCH) {
+            throw new IllegalArgumentException("Invalid URI type for '" + uri + "'.");
+        }
+        return match;
+    }
 }
